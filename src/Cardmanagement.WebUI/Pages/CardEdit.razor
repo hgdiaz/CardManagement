@@ -1,0 +1,90 @@
+﻿@page "/cardedit"
+@page "/cardedit/{cardNumber}"
+
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@inject CardAPIService cardAPIService
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Roles = "Admin")]
+
+
+<PageTitle>Edit Card</PageTitle>
+
+<h1>Edit Card</h1>
+
+
+<EditForm EditContext="editContext" OnSubmit="@Submit">
+    <div>
+        <label>
+            Number:
+            <InputText @bind-Value="card.Number" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Card Holder Name:
+            <InputText @bind-Value="card.CardHolderName" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Expiration Month:
+            <InputNumber @bind-Value="card.ExpirationMonth" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Expirationt Year:
+            <InputNumber @bind-Value="card.ExpirationtYear" />
+        </label>
+    </div>
+    <div>
+        <label>
+            CVC:
+            <InputText @bind-Value="card.CVC" />
+        </label>
+    </div>
+    <button type="submit">Submit</button>
+    <button onclick="@(() => Cancel())">Cancel</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public string cardNumber { get; set; }
+
+    private EditCard card { get; set; }
+
+    private EditContext? editContext;
+
+    private GetCardByNumberQueryResponse cardResp;
+
+    protected override async Task OnInitializedAsync()
+    {
+        card ??= new();
+        editContext = new(card);
+
+        cardResp = await cardAPIService.Get(cardNumber);
+        if (cardResp != null)
+        {
+            card.Id = cardResp.Id;
+            card.Number = cardResp.Number;
+            card.CardHolderName = cardResp.CardHolderName;
+            card.ExpirationMonth = cardResp.ExpirationMonth;
+            card.ExpirationtYear = cardResp.ExpirationtYear;
+            card.CVC = cardResp.CVC;
+        }
+    }
+
+    private async void Submit()
+    {
+        var res = await cardAPIService.Update(card);
+        NavigationManager.NavigateTo("cardslist");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("cardslist");
+    }
+}

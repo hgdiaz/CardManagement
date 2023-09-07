@@ -1,0 +1,81 @@
+﻿@page "/cardslist"
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@inject CardAPIService cardAPIService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Cards List</PageTitle>
+
+<h1>Cards List</h1>
+
+<p>
+    List of cards from API
+</p>
+
+
+@if (cardsList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Card Number</th>
+                <th>Card Holder Name</th>
+                <th>Details</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in cardsList)
+            {
+                <tr>
+                    <td>@item.Number</td>
+                    <td>@item.CardHolderName</td>
+                    <td>
+                        <NavLink class="nav-link" @onclick="(() => ViewDetails(item.Number))">
+                            Details
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink class="nav-link" @onclick="(() => Edit(item.Number))">
+                            Edit
+                        </NavLink>
+                    </td>
+                    <td>
+                        <NavLink class="nav-link" @onclick="(() => Delete(item.Number))">
+                            Delete
+                        </NavLink>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<GetAllCardsResponse> cardsList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cardsList = await cardAPIService.GetAllCards();
+    }
+
+    private void ViewDetails(string number)
+    {
+        NavigationManager.NavigateTo("CardDetail/" + number);
+    }
+
+    private void Edit(string number)
+    {
+        NavigationManager.NavigateTo("cardedit/" + number);
+    }
+
+    private void Delete(string number)
+    {
+        NavigationManager.NavigateTo("carddelete/" + number);
+    }
+}

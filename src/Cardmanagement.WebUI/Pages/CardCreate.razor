@@ -1,0 +1,70 @@
+﻿@page "/cardcreate"
+
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@inject CardAPIService cardAPIService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Add Card</PageTitle>
+
+<h1>Add Card</h1>
+
+
+<EditForm EditContext="editContext" OnSubmit="@Submit">
+    <div>
+        <label>
+            Number:
+            <InputText @bind-Value="card.Number" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Card Holder Name:
+            <InputText @bind-Value="card.CardHolderName" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Expiration Month:
+            <InputNumber @bind-Value="card.ExpirationMonth" />
+        </label>
+    </div>
+    <div>
+        <label>
+            Expirationt Year:
+            <InputNumber @bind-Value="card.ExpirationtYear" />
+        </label>
+    </div>
+    <div>
+        <label>
+            CVC:
+            <InputText @bind-Value="card.CVC" />
+        </label>
+    </div>
+    <button type="submit">Submit</button>   
+    <button onclick="@(() => Cancel())">Cancel</button>
+</EditForm>
+
+
+@code {
+    private AddCard card { get; set; }
+
+    private EditContext? editContext;
+
+    protected override void OnInitialized()
+    {
+        card ??= new();
+        editContext = new(card);
+    }
+
+    private async void Submit()
+    {
+        var res = await cardAPIService.Create(card);
+        NavigationManager.NavigateTo("cardslist");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("cardslist");
+    }
+}

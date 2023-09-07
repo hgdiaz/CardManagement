@@ -1,0 +1,65 @@
+﻿@page "/carddelete"
+@page "/carddelete/{cardNumber}"
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@inject CardAPIService cardAPIService
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Delete Card</PageTitle>
+
+<h1>Delete Card</h1>
+
+
+@if (card == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <td>Number</td>
+            <td>@card.Number</td>
+        </tr>
+        <tr>
+            <td>Card Holder Name</td>
+            <td>@card.CardHolderName</td>
+        </tr>
+        <tr>
+            <td>Expiration</td>
+            <td>@card.ExpirationMonth/@card.ExpirationtYear</td>
+        </tr>
+        <tr>
+            <td>CVC</td>
+            <td>@card.CVC</td>
+        </tr>
+        <button onclick="@(() => Delete())">Delete</button>
+        <button onclick="@(() => Cancel())">Cancel</button>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string cardNumber { get; set; }
+
+    private GetCardByNumberQueryResponse card;
+
+    protected override async Task OnInitializedAsync()
+    {
+        card = await cardAPIService.Get(cardNumber);
+    }
+
+    private async void Delete()
+    {
+        await cardAPIService.Delete(card.Id);
+        NavigationManager.NavigateTo("cardslist");
+    }
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("cardslist");
+    }
+
+}

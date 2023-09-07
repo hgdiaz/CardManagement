@@ -1,0 +1,52 @@
+﻿@page "/registeruser"
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@using Cardmanagement.WebUI.Models.Authentication;
+@layout AuthLayout
+@inject NavigationManager navigationManager
+@inject CustomStateProvider authStateProvider
+
+<h1 class="h2 font-weight-normal login-title">
+    Register user account
+</h1>
+
+<EditForm class="form-signin" OnValidSubmit="OnSubmit" Model="registerRequest">
+    <DataAnnotationsValidator />
+
+    <label for="inputUsername" class="sr-only">User Name</label>
+    <InputText id="inputUsername" class="form-control" @bind-Value="registerRequest.Username" autofocus placeholder="Username" />
+    <ValidationMessage For="@(() => registerRequest.Username)" />
+
+    <label for="inputEmail" class="sr-only">Email</label>
+    <InputText id="inputEmail" class="form-control" @bind-Value="registerRequest.Email" autofocus placeholder="Email" />
+    <ValidationMessage For="@(() => registerRequest.Email)" />
+
+    <label for="inputPassword" class="sr-only">Password</label>
+    <InputText type="password" id="inputPassword" class="form-control" placeholder="Password" @bind-Value="registerRequest.Password" />
+    <ValidationMessage For="@(() => registerRequest.Password)" />
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+
+    <label class="text-danger">@error</label>
+
+
+</EditForm>
+
+@code {
+    RegisterRequest registerRequest { get; set; } = new RegisterRequest();
+    string error { get; set; }
+
+    async Task OnSubmit()
+    {
+        error = null;
+        try
+        {
+            await authStateProvider.Register(registerRequest);
+            navigationManager.NavigateTo("/login");
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}

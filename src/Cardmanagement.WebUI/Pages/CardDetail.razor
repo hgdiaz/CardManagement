@@ -1,0 +1,58 @@
+﻿@page "/carddetail"
+@page "/carddetail/{cardNumber}"
+@using Cardmanagement.WebUI.Models;
+@using Cardmanagement.WebUI.Services;
+@inject CardAPIService cardAPIService
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Card Detail</PageTitle>
+
+<h1>Card Detail</h1>
+
+
+@if (card == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <td>Number</td>
+            <td>@card.Number</td>
+        </tr>
+        <tr>
+            <td>Card Holder Name</td>
+            <td>@card.CardHolderName</td>
+        </tr>
+        <tr>
+            <td>Expiration</td>
+            <td>@card.ExpirationMonth/@card.ExpirationtYear</td>
+        </tr>
+        <tr>
+            <td>CVC</td>
+            <td>@card.CVC</td>
+        </tr>
+    </table>
+    <button onclick="@(() => Cancel())">Go Back</button>
+}
+
+@code {
+    [Parameter]
+    public string cardNumber { get; set; }
+
+    private GetCardByNumberQueryResponse card;
+
+    protected override async Task OnInitializedAsync()
+    {
+        card = await cardAPIService.Get(cardNumber);
+    }
+
+
+    private void Cancel()
+    {
+        NavigationManager.NavigateTo("cardslist");
+    }
+}
