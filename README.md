@@ -51,12 +51,66 @@ In order to run both projects at the same time (the API and the Blazor project),
 ![Multiple startup projects](https://github.com/hgdiaz/CardManagement/blob/main/img/Multiple_startup.jpg?raw=true)
 
 ## About the functionality
-The requirements are:
 
- 1. The card management module with API endpoints to make CRUD operations
+**User Story Description:**
+
+As a cardholder, I want to be able to manage my cards through a web API application, so that I can perform CRUD (Create, Read, Update, Delete) operations on my cards. Each card should have the following information: card number, cardholder name, expiration month, expiration year, and CVC number.
+
+**Acceptance Criteria:**
+
+**1. Create a Card**
+
+-   As a user, I want to be able to create a new card by providing the following details:
+    -   Card Number
+    -   Cardholder Name
+    -   Expiration Month
+    -   Expiration Year
+    -   CVC Number
+-   The API should validate the input data to ensure it meets the following criteria:
+    -   Card Number must be a valid credit card number with 15 digits.
+    -   Cardholder Name must be a non-empty string.
+    -   Expiration Month must be a valid month (1-12).
+    -   Expiration Year must be a valid year between 2023 and 2050.
+    -   CVC Number must be a valid CVC code (3 digits)
+-   Upon successful creation, the API should return the newly created ID.
+
+**2. Read Card Details**
+
+-   As an admin, I want to retrieve the details of a specific card by providing its unique ID. The API should return the card's details, including the card number, cardholder name, expiration month, and expiration year and CVC.
+
+**3. Update Card Details**
+
+-   As an admin, I want to update the details of an existing card by providing its ID along with the fields I want to update. I should be able to update the following fields:
+    -   Number
+    -    Cardholder Name
+    -   Expiration Month
+    -   Expiration Year
+    -   CVC Number
+-   The API should validate the input data for correctness and ensure it meets the criteria mentioned in the "Create a Card" section.
 
 
+**4. Delete a Card**
 
-Extra requirements:
+-   As an admin, I want to delete a card by providing its ID
+-   The API should remove the card from the system
+
+**5. List All Cards**
+
+-   As a user, I want to retrieve a list of all cards.
+-   The API should return a  list of card summaries, including the card number and cardholder name.
+
+**6. Security and Authentication**
+
+-   The API should enforce secure authentication mechanisms to ensure that only authorized users can access and manage their cards.
+-   Authentication can be implemented using tokens.
+
+**7. Error Handling**
+
+-   The API should provide meaningful error messages and appropriate HTTP status codes for various scenarios, such as validation failures, unauthorized access, or server errors.
+
+**8. Logging**
+
+-   Implement logging to record API usage and errors for monitoring and troubleshooting purposes.
+
 
  
